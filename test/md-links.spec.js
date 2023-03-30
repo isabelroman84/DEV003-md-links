@@ -1,6 +1,7 @@
 // const { mdLinks } = require('../index.js');
 const { 
   isMdFile,
+  readMdFile,
   relativeRouteConverter,
   routeIsAbsolute,
   routeIsValid
@@ -36,6 +37,20 @@ describe('isMdFile', () => {
     expect(isMdFile('index.js')).toBe(false);
   })
 });
+// ---------- Lee el archivo ---------
+describe('readMdFile', () => {
+  it('should read a file with any extension', () => {
+    return(readMdFile('prueba.js')).catch((err) => {
+      expect(err).toBe('No pudo ser leído');
+    })
+  })
+  it('should read a file with any extension', () => {
+    return(readMdFile('prueba.md')).then((data) => {
+      expect(data).toBe('Hola mundo');
+    })
+  })
+})
+
 // describe('mdLinks', () => {
   // it('should reject the promise when the path does not exist', () => {
   //   return(mdLinks('/prueba/pathnoexiste.md')).catch((error) => {

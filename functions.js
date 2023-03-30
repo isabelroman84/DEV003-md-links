@@ -45,7 +45,6 @@ readMdFile('prueba.md').then((data) => {
 // fs.writeFileSync('vacio.md', '')
 // /\[+[a-zA-Z0-9.-].+\]+\([a-zA-Z0-9.-].+\)/gm
 // /\[([\w\s\d]+)\]\((https?:\/\/[\w\d./?=#]+)\)/g
-// .then((res) => (res.ok ? res.json() : Promise.reject(res)))
 
 module.exports = {
     isMdFile,
