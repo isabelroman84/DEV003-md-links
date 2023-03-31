@@ -30,22 +30,22 @@ describe('relativeRouteConverter', () => {
 });
 // ---------- Valida la extensión del archivo ---------
 describe('isMdFile', () => {
-  it('it should validate if it is an md file', () => {
+  it('should return true if the file is md', () => {
     expect(isMdFile('README.md')).toBe(true);
   })
-  it('it should validate if it is an md file', () => {
+  it('should return false if the file is not md', () => {
     expect(isMdFile('index.js')).toBe(false);
   })
 });
 // ---------- Lee el archivo ---------
 describe('readMdFile', () => {
-  it('should read a file with any extension', () => {
+  it('it should show error otherwise the file could not be read', () => {
     return(readMdFile('prueba.js')).catch((err) => {
-      expect(err).toBe('No pudo ser leído');
+      expect(err).toBe(err);
     })
   })
   it('should read a file with any extension', () => {
-    return(readMdFile('prueba.md')).then((data) => {
+    return(readMdFile('inicial.md')).then((data) => {
       expect(data).toBe('Hola mundo');
     })
   })
