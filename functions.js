@@ -1,5 +1,5 @@
-const { rejects } = require('assert');
 const fs = require('fs'); //gestión de archivos
+const fsPromises = require('fs').promises;
 const path = require('path');
 
 // ---------- ¿La ruta es válida(existe)? ----------
@@ -19,26 +19,33 @@ const isMdFile = (route) => {
     return path.extname(route) === '.md' ? true : false
 }
 
-// Leer el archivo
-const readMdFile = (mdFile) => {
-    return new Promise((resolve, reject) => {
-        fs.readFile(mdFile, 'utf-8', (err, data) => { 
-        if(err || data === '') {
-            reject('No pudo ser leído')
-        } 
-        resolve(data)
-        });
-    });
-};
-readMdFile('prueba.md').then((data) => {
-    console.log(data) //posteriormente esto será mi resolve
-}).catch(err => console.log(err))
-
 // ---------- ¿El archivo tiene links? ----------
-// const searchLinks = (route, text) => {
-//     const regex = /\[([\w\s\d]+)\]\((https?:\/\/[\w\d./?=#]+)\)/g;
-//     const matrixLinks = [{}]
-// }
+// Leer el archivo
+const readMdFile = (route) => fsPromises.readFile(route, 'utf-8');
+
+// Prueba para validar la función (no se testea)
+// readMdFile('prueba.md').then((data) => {
+//     console.log(data) //posteriormente esto será mi resolve
+// }).catch(err => console.log(err))
+
+// Extraer los links
+const searchLinks = (content, file) => {
+    const regex = /\[+[a-zA-Z0-9.-].+\]+\([a-zA-Z0-9.-].+\)/g;
+    const stringArray = content.match(regex);
+    const matrixLinks = stringArray.map((link) => {
+        const splitLink = link.split(']');
+        return {
+            href: splitLink[1].replace('(', '').replace(')', ''),
+            text: splitLink[0].replace('[', ''),
+            file
+        }
+    })
+    return matrixLinks;
+}
+// Prueba para validar la función (no se testea)
+// readMdFile('prueba.md').then((data) => {
+//     console.log(searchLinks(data, 'prueba.md'));
+// }).catch(err => console.log(err))
 
 // .......... Helpers ..........
 // 'C:\\Users\\Laboratoria\\Isabel\\DEV003-md-links\\index.js'
@@ -46,13 +53,25 @@ readMdFile('prueba.md').then((data) => {
 // /\[+[a-zA-Z0-9.-].+\]+\([a-zA-Z0-9.-].+\)/gm
 // /\[([\w\s\d]+)\]\((https?:\/\/[\w\d./?=#]+)\)/g
 
+// ----- CÓDIGO BORRADO
+// const readMdFile = (mdFile) => {
+//     return new Promise((resolve, reject) => {
+//         fs.readFile(mdFile, 'utf-8', (err, data) => { 
+//         if(err || data === '') {
+//             reject('No pudo ser leído')
+//         } 
+//         resolve(data)
+//         });
+//     });
+// };
 module.exports = {
     isMdFile,
     readMdFile,
     relativeRouteConverter,
     routeIsAbsolute,
     routeIsValid,
-  };
-  
+    searchLinks,
+};
+
 
 
