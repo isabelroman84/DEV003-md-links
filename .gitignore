@@ -5,3 +5,5 @@ coverage/
 node_modules/
 #ejercicios
 /ejercicios.js
+#helpers
+src/assets/helpers.js

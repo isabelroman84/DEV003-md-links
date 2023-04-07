@@ -1,62 +1,104 @@
 // const { mdLinks } = require('../index.js');
-const { 
+const {
+  isDirectory,
+  readDir,
   isMdFile,
-  readMdFile,
+  getFilesDirectory,
   relativeRouteConverter,
   routeIsAbsolute,
-  routeIsValid
+  routeIsValid,
 } = require('../src/utils.js');
 
-// ---------- Valida la ruta ---------
-describe('routeIsValid', () => {
-  it('should return if the path is valid', () => {
-    expect(routeIsValid('src\\index.js')).toBe(true);
+const fileMdRelative = 'src\\assets\\Pruebas\\inicial.md'
+const fileMdAbsolute = 'C:\\Users\\Laboratoria\\Isabel\\DEV003-md-links\\src\\assets\\Pruebas\\inicial.md'
+const directory = 'src\\assets\\Pruebas'
+const filesInDirectory = ['Dir_vacio', 'inicial.md', 'prueba.md', 'vacio.md']
+const arrayFilesDirectory = ['C:\\Users\\Laboratoria\\Isabel\\DEV003-md-links\\src\\assets\\Pruebas\\Dir_vacio',
+  'C:\\Users\\Laboratoria\\Isabel\\DEV003-md-links\\src\\assets\\Pruebas\\inicial.md',
+  'C:\\Users\\Laboratoria\\Isabel\\DEV003-md-links\\src\\assets\\Pruebas\\prueba.md',
+  'C:\\Users\\Laboratoria\\Isabel\\DEV003-md-links\\src\\assets\\Pruebas\\vacio.md']
+const file = 'src\\index.js'
+
+// -------- Valida que la ruta existe --------
+describe('function that validates the path', () => {
+  it('should be a function', () => {
+    expect(typeof routeIsValid).toBe('function');
+  })
+  it('should return "true" if the path is valid', () => {
+    expect(routeIsValid(fileMdRelative)).toBeTruthy();
   })
 });
-// ---------- Verifica si la ruta es absoluta ---------
-describe('routeIsAbsolute', () => {
-  it('should return if path is absolute', () => {
-    expect(routeIsAbsolute('C:\\Users\\Laboratoria\\Isabel\\DEV003-md-links\\src\\cli.js')).toBe(true);
+
+// -------- Valida que la ruta es absoluta --------
+describe('function return absolute path', () => {
+  it('should return "true" if path is absolute', () => {
+    expect(routeIsAbsolute(fileMdAbsolute)).toBeTruthy();
   })
 });
-// ---------- Convierte la ruta relativa en absoluta ---------
-describe('relativeRouteConverter', () => {
+// // ---------- Convierte ruta relativa en absoluta ---------
+describe('function that converts a relative path to absolute', () => {
   it('should convert a relative path to absolute', () => {
-    expect(relativeRouteConverter('src\\cli.js')).toBe('C:\\Users\\Laboratoria\\Isabel\\DEV003-md-links\\src\\cli.js');
-  })
-  it('should convert a relative path to absolute', () => {
-    expect(relativeRouteConverter('C:\\Users\\Laboratoria\\Isabel\\DEV003-md-links\\src\\cli.js')).toBe('C:\\Users\\Laboratoria\\Isabel\\DEV003-md-links\\src\\cli.js');
+    expect(relativeRouteConverter(fileMdRelative)).toBe(fileMdAbsolute);
   })
 });
-// ---------- Valida la extensión del archivo ---------
-describe('isMdFile', () => {
-  it('should return true if the file is md', () => {
-    expect(isMdFile('README.md')).toBe(true);
+
+// -------- Valida si es un directorio --------
+describe('function that checks if it is a directory', () => {
+  it('should return "true" if it is a directory', () => {
+    expect(isDirectory(directory)).toBeTruthy();
   })
-  it('should return false if the file is not md', () => {
-    expect(isMdFile('index.js')).toBe(false);
+  it('should return "false" if not a directory', () => {
+    expect(isDirectory(file)).toBeFalsy();
   })
 });
-// ---------- Lee el archivo ---------
-describe('readMdFile', () => {
-    it('it should show error otherwise the file could not be read', () => {
-      return(readMdFile('prueba.js')).catch((err) => {
-        expect(err).toBe(err);
-      })
-    })
-    it('should read a file with any extension', () => {
-      return(readMdFile('src\\assets\\inicial.md')).then((data) => {
-        expect(data).toBe('Hola mundo');
-      })
-    })
+
+// Leer el directorio
+describe('function that read the directory', () => {
+  it('should read a directory', () => {
+    expect(readDir(directory)).toEqual(filesInDirectory);
   })
+});
 
-
-
-// describe('mdLinks', () => {
-  // it('should reject the promise when the path does not exist', () => {
-  //   return(mdLinks('/prueba/pathnoexiste.md')).catch((error) => {
-  //     expect(error).toBe('La ruta no existe');
+// Recorrer el directorio
+describe('function that iterates the directory', () => {
+  it('should be a function', () => {
+    expect(typeof getFilesDirectory).toBe('function');
+  })
+  it('returns an array with the paths of the files', () => {
+    expect(getFilesDirectory(directory)).toEqual(arrayFilesDirectory);
+  })
+  //   it('if it is not a directory but it is a .md file, add it to the array', () => {
+  //     expect(getFilesDirectory(fileMdAbsolute)).toBe(arrayFilesDirectory);
   //   })
-  // })
+  })
+  // ---------- Valida extensión del archivo ---------
+  describe('function return if is a markdown file', () => {
+    it('should return "true" if the file is md', () => {
+      expect(isMdFile(fileMdRelative)).toBeTruthy();
+    })
+    it('should return "false" if the file is not md', () => {
+      expect(isMdFile(file)).toBeFalsy();
+    })
+  })
+
+  // ---------- Validar si el archivo tiene links ----------
+// // ---------- Lee el archivo ---------
+// describe('function that read the file', () => {
+//   it.only('should read a file with any extension', () => {
+//     return readMdFile(pathRelative).then(data => {
+//       expect(data).toEqual('Hola mundo');
+//     })
+//   })
+// // })
+
+// describe('function that read the file', () => {
+//   it.only('should read a file', () => {
+//     return readMdFile('C:\\Users\\Laboratoria\\Isabel\\DEV003-md-links\\src\\assets\\prueba.md')
+//       .then(data => {
+//         expect(data).toEqual(expect.any(String));
+//       });
+//   });
 // });
+
+// Extraer los links en un array
+// Consulta HTTP se debe iterar el array de objetos y usar propiedad href
