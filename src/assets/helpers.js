@@ -1,7 +1,14 @@
+// PREGUNTA IMPORTANTE
+// if(!isMdFile(absolutePath)) {
+//     const newArray = arrayMdFiles.filter(file => file !== !isMdFile(absolutePath))
+//     console.log(newArray)
+//   }
 // .......... Helpers ..........
 // ** Valida que la ruta existe
 // console.log(routeIsValid('README.md'))
 // console.log(routeIsValid('C:\\Users\\Laboratoria\\Isabel\\DEV003-md-links\\src'))
+// console.log(routeIsValid('C:\\Users\\Laboratoria\\Isabel\\DEV003-md-links\\src\\assets\\Pruebas\\Dir_vacio'))
+// console.log(routeIsValid('src\\assets\\Pruebas\\Dir_vacio'))
 
 // ** Valida que la ruta es absoluta
 // console.log(routeIsAbsolute('README.md'))
@@ -18,7 +25,7 @@
 // ** Validar si es directorio (no se puede probar metida en carpeta src)
 // console.log(isDirectory('C:\\Users\\Laboratoria\\Isabel\\DEV003-md-links\\src'))
 // console.log(isDirectory('README.md'))
-// console.log(isDirectory('coverage'))
+// console.log('Devuelve true o false', 'coverage', isDirectory('coverage'))
 
 // ** Leer directorio
 // console.log(readDir('coverage'))
@@ -34,19 +41,19 @@
 // console.log(isFile('coverage'))
 
 // ** Prueba para validar la función readMdFile
-// readMdFile('src\\assets\\inicial.md').then((data) => {
+// readMdFile('src\\assets\\Pruebas\\borrar.js').then((data) => {
 //     console.log(data) //posteriormente esto será mi resolve
 // }).catch(err => console.log({code: 'ENOENT' }, 'El archivo no puede ser leído'));
 
-// ** Prueba para validar la función searchLinks(no se testea)
-// readMdFile('src\\assets\\prueba.md').then((data) => {
-//     console.log(searchAndGetLinks('src\\assets\\prueba.md', data));
+// ** Prueba para validar la función searchLinks(no se testea) -extraer links-
+// readMdFile('src\\assets\\Pruebas\\prueba.md').then((data) => {
+    // console.log(searchAndGetLinks('src\\assets\\prueba.md', data));
 // }).catch(err => console.log(err.message))
 
 // ** Prueba para validar petición HTTP
 
-// readMdFile('src\\assets\\prueba.md').then((data) => {
-//     fetchRequestStatus(searchAndGetLinks('src\\assets\\prueba.md', data))
+// readMdFile('src\\assets\\Pruebas\\prueba.md').then((data) => {
+//     fetchRequestStatus(searchAndGetLinks('src\\assets\\Pruebas\\prueba.md', data))
 //         .then(console.log);
 // })
 
@@ -70,6 +77,23 @@
 //         });
 //     });
 // };
+
+// const readFile = (route) => new Promise ((resolve, reject) => {
+//     if(!isMdFile(route)) {
+//         reject(new Error("El archivo no es un archivo Markdown válido."));
+//     } else {
+//         fs.readFile(route, (err, data) => {
+//             if(err) {
+//                 reject(err)
+//             } else {
+//                 resolve(data.toString());
+//             }
+//         });
+//     }
+// });
+// readFile('src\\assets\\Pruebas\\borrar.js')
+// .then(result => console.log(result))
+// .catch(err => console.log(err))
 
 // Extraer los links
 // const searchLinks = (route, content) => {
@@ -105,3 +129,4 @@
 //   })
 // 
 // 
+

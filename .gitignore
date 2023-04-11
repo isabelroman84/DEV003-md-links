@@ -6,4 +6,4 @@ node_modules/
 #ejercicios
 /ejercicios.js
 #helpers
-src/assets/helpers.js
+/src/assets/helpers.js
