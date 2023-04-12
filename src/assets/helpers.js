@@ -1,8 +1,79 @@
-// PREGUNTA IMPORTANTE
-// if(!isMdFile(absolutePath)) {
-//     const newArray = arrayMdFiles.filter(file => file !== !isMdFile(absolutePath))
-//     console.log(newArray)
-//   }
+// PARA LEER LA FETCHREQUEST
+// readFile('src\\assets\\Pruebas\\inicial.md').then((data) => {
+//     fetchRequestStatus(searchAndGetLinks('src\\assets\\Pruebas\\inicial.md', data))
+//         .then(console.log)
+//         .catch(console.log)
+// })
+// CÓDIGO PENDIENTE DE DEFINIR QUÉ HACER CON ÉL
+// Valida estatus de archivo
+// const isFile = (route) => fs.statSync(route, {bigint:true}).isFile()
+/* ** DIRECTORIOS
+// Leer el directorio (retorna array de archivos)
+const readDirSync = (route) => fs.readdirSync(route)
+
+// Guarda rutas absolutas del directorio en un array
+const getFilesDirectory = (route) => {
+    const statSyncIsDirectory = fs.statSync(route).isDirectory();
+    const absolutePath = transformPathRelativeInAbsolute(route);
+    let arrayFiles = [];
+
+    if (statSyncIsDirectory) {
+        readDirSync(absolutePath).forEach((file) => {
+            const newRoute = path.join(absolutePath, file)
+            if (extnameFileisMd(newRoute)) {
+                const newRoute = path.join(route, file)
+                arrayFiles = arrayFiles.concat(newRoute)
+            } else if (statSyncIsDirectory) {
+                arrayFiles = arrayFiles.concat(getFilesDirectory(newRoute))
+            }
+        })
+    } else if (!statSyncIsDirectory && extnameFileisMd(route)) {
+        arrayFiles.push(route)
+    }
+    return arrayFiles;
+}
+*/
+/*TEST DIRECTORIOS
+const fetchRequestStatus = matrixLinks => {
+    const arrayPromises = matrixLinks.map(link => {
+        return fetch(link.href).then((response) => {
+            return {
+                ...link,
+                status: response.status,
+                statusText: response.status >= 400 ? 'FAIL' : response.statusText,
+            }
+        })
+    })
+    return Promise.all(arrayPromises)
+}
+*/
+
+// -------- Valida si es un directorio --------
+// const isDirectory = (route) => fs.statSync(route).isDirectory()
+
+// readMdFile('src\\assets\\Pruebas\\prueba.md').then((data) => {
+//     console.log(searchAndGetLinks('src\\assets\\Pruebas\\prueba.md', data));
+// }).catch(err => console.log(err.message))
+
+/* La función toma la matriz de links que arrojó la función anterior y retorna una promesa que se resuelve con
+un valor y es un array que contiene el objeto con 5 propiedades. Matrix links tiene información sobre cada
+enlace, incluida la propiedad href que contiene la URL
+1. Inicializo arrayResults porque ahí quiero almacenar el objeto 
+2. Necesito iterar el array de links  y lo haré con map porque me devuelve un nuevo array. Para cada link voy
+a hacer una petición fetch y como retorna una promesa lo voy a almacenar en arrayPromises. 
+3. Con el .then le voy a decir como manejar la respuesta del servidor. Lo que hará es ir agregando a 
+arrayResults las propiedades que quiero que tenga el objeto, incluyendo las propiedades originales que 
+traje de la función anterior (... : combinar objetos o arrays en uno nuevo o para pasar múltiples argumentos a una función) más status y statusText, por eso lo hago aquí, para poder tener acceso
+a las propiedades de link.
+4. Como el statusText de los 404 me sale como not found, pongo una condición y es que si la respuesta es 
+mayor o igual a 400 el statusText sea 'FAIL' y si es menor será 'OK'
+5. Ahí tengo listo el objeto y procedo a recoger todas las promesas con el Promise.all. Cuando se resuelven
+pasamos a resolver la promesa que devuelve el arrayResults
+*/
+// readMdFile('src\\assets\\Pruebas\\prueba.md').then((data) => {
+//     fetchRequestStatus(searchAndGetLinks('src\\assets\\Pruebas\\prueba.md', data))
+//         .then(arrayResp => {arrayResp.forEach(resp => console.log(resp))});
+// })
 // .......... Helpers ..........
 // ** Valida que la ruta existe
 // console.log(routeIsValid('README.md'))

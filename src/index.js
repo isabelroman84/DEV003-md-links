@@ -1,19 +1,34 @@
-const { routeIsValid, routeIsAbsolute, relativeRouteConverter, isDirectory, isFile, readDir, getFilesDirectory, isMdFile } = require('./utils.js')
+const {pathExistsSync, readMdFile, transformPathRelativeInAbsolute, isDirectory,  readDir, getFilesDirectory, extnameFileisMd, searchAndGetLinks } = require('./utils.js')
 
 const mdLinks = (path, options) => {
   return new Promise((resolve, reject) => {
     let absolutePath;
-    if (!routeIsValid(path)) {
-      console.log('1. La ruta existe', routeIsValid(path))
+    if (!pathExistsSync(path)) {
+      // console.log('1. La ruta existe', routeIsValid(path))
       // ** Hay rutas válidas, pero que son de otra extensión, capturar el error
       // nos aseguramos de que si no existe no ejecute el resolve
-     reject(`The ${path} does not exist or is not valid`);
-    } else {
-    } if (isDirectory(path) || isMdFile(path)) {
-      console.log('here')
-      absolutePath = relativeRouteConverter(path)
+      reject(`The ${path} does not exist or is not valid`);
+    } else if (extnameFileisMd(path)) {
+      // console.log('here')
+      absolutePath = transformPathRelativeInAbsolute(path)
       // console.log('2. Relativa transformada', absolutePath)
+      readMdFile(absolutePath).then((data) => {
+        // console.log(12)
+        const matrixLinks = searchAndGetLinks(absolutePath, data);
+        // console.log(options);
+        if(options.validate === true) {
+          // peticiones http
+
+        } else {
+          // console.log(matrixLinks)
+          resolve(matrixLinks)
+        }
+      }).catch(err => reject(err.message))
+
     };
+
+
+
     // TENGO UNA RUTA ABSOLUTA
     // QUIERO LEER EL DIRECTORIO PARA OBTENER LOS LINKS
     // SI ESTÁ VACÍO REJECT
@@ -35,8 +50,8 @@ const mdLinks = (path, options) => {
     //   } else {
     //     newArray = getFilesDirectory(absolutePath)
     //     console.log('Array de archivos', arrayMdFiles)
-      // }
-    
+    // }
+
     resolve(path)
     // Identificar si la ruta existe
     // if(fs.existsSync(path)) {
@@ -53,8 +68,8 @@ const mdLinks = (path, options) => {
 //   .then(result => console.log(result))
 //   .catch(error => console.log(error))
 
-mdLinks('thumb.png', { valide: true })
-  .then(result => console.log(result))
+mdLinks('src\\assets\\Pruebas\\prueba.md', { validate: false })
+  .then((result) => console.log(result))
   .catch(error => console.log(error))
 
 // mdLinks('README.md', { valide: true })
