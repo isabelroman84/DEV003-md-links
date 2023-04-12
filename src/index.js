@@ -1,94 +1,44 @@
-const {pathExistsSync, readMdFile, transformPathRelativeInAbsolute, isDirectory,  readDir, getFilesDirectory, extnameFileisMd, searchAndGetLinks } = require('./utils.js')
+const {
+  extnameFileisMd,
+  pathExistsSync,
+  readFile,
+  searchAndGetLinks,
+  transformPathRelativeInAbsolute,
+  fetchRequestStatus,
+} = require('./utils.js')
 
 const mdLinks = (path, options) => {
   return new Promise((resolve, reject) => {
-    let absolutePath;
-    if (!pathExistsSync(path)) {
-      // console.log('1. La ruta existe', routeIsValid(path))
-      // ** Hay rutas válidas, pero que son de otra extensión, capturar el error
-      // nos aseguramos de que si no existe no ejecute el resolve
-      reject(`The ${path} does not exist or is not valid`);
-    } else if (extnameFileisMd(path)) {
-      // console.log('here')
-      absolutePath = transformPathRelativeInAbsolute(path)
-      // console.log('2. Relativa transformada', absolutePath)
-      readMdFile(absolutePath).then((data) => {
-        // console.log(12)
-        const matrixLinks = searchAndGetLinks(absolutePath, data);
-        // console.log(options);
-        if(options.validate === true) {
-          // peticiones http
-
+    if (!pathExistsSync(path) || !extnameFileisMd(path)) {
+      reject(`The ${path} does not exist or is not valid`)
+    } else {
+      const absolutePath = transformPathRelativeInAbsolute(path)
+      readFile(absolutePath).then(data => {
+        const arrayLinks = searchAndGetLinks(absolutePath, data);
+        if (arrayLinks.length === 0) {
+          reject(`The ${path} doesn´t have links`)
         } else {
-          // console.log(matrixLinks)
-          resolve(matrixLinks)
+          if (!options.valide) {
+            resolve(arrayLinks)
+          } else {
+            const arrayLinkStatus = fetchRequestStatus(arrayLinks)
+            resolve(arrayLinkStatus)
+          }
         }
-      }).catch(err => reject(err.message))
-
-    };
-
-
-
-    // TENGO UNA RUTA ABSOLUTA
-    // QUIERO LEER EL DIRECTORIO PARA OBTENER LOS LINKS
-    // SI ESTÁ VACÍO REJECT
-    // SI TIENE LINKS, RECORRERLO PARA OBTENERLOS EN UN ARRAY
-    // ** hay un problema y es que no logré acceder a los subdirectorios y ahí pueden haber archivos .md
-    // QUIERO FILTRAR EL ARRAY PARA QUE SOLO QUEDEN ARCHIVOS MD
-    // UNA CONDICIÓN ES QUE SI NO ES DIRECTORIO, PERO ES ARCHIVO MD, TAMBIÉN DEBE LEERSE
-    // CUANDO YA TENGA EL ARCHIVO O EL ARRAY DE ARCHIVOS VOY A HACER UNA PETICIÓN HTTP
-    // SI MD-LINKS ES FALSE VA A DEVOLVER HREF, TEXT Y FILE
-    // SI MD-LINKS ES TRUE VA A DEVOLVER HREF, TEXT, FILE, STATUS Y STATUS TEXT
-    // ** no comprendo muy bien esta parte de que mdLinks retorne true o false
-
-    // if (isDirectory(absolutePath)) {
-    //   let newArray = [];
-    //   console.log('Este es el array', newArray)
-    //   if (isDirectory) {
-    //     reject(`The directory ${path} is empty`);
-    //     console.log('Está vacío', arrayFilesDirectory)
-    //   } else {
-    //     newArray = getFilesDirectory(absolutePath)
-    //     console.log('Array de archivos', arrayMdFiles)
-    // }
-
-    resolve(path)
-    // Identificar si la ruta existe
-    // if(fs.existsSync(path)) {
-    //   // chequear y convertir a ruta absoluta
-    // } else {
-    //   // Rechaza la promesa si no existe la ruta
-    //   reject('La ruta no existe')
-    // }
-
+      })
+    }
   })
 }
 
-// mdLinks('C:\\Users\\Laboratoria\\Isabel\\DEV003-md-links\\src\\assets\\Pruebas\\prueba.md', { valide: true })
-//   .then(result => console.log(result))
-//   .catch(error => console.log(error))
 
-mdLinks('src\\assets\\Pruebas\\prueba.md', { validate: false })
-  .then((result) => console.log(result))
+mdLinks('src\\assets\\Pruebas\\inicial.md', { valide: true })
+  .then(result => console.log(result))
   .catch(error => console.log(error))
 
-// mdLinks('README.md', { valide: true })
-//   .then(result => console.log(result))
-//   .catch(error => console.log(error.message))
-
-// mdLinks('src\\assets\\Pruebas\\prueba.md', { valide: true })
-//   .then(result => console.log(result))
-//   .catch(error => console.log(error))
-
-// mdLinks('C:\\Users\\Laboratoria\\Isabel\\DEV003-md-links\\src\\assets\\Pruebas\\Dir_vacio', { valide: false })
-//   .then(result => console.log(result))
-//   .catch(error => console.log(error.message))
-
-// mdLinks('C:\\Users\\Laboratoria\\Isabel\\DEV003-md-links\\src\\assets\\Pruebas\\prueba.md', console.log)
-// .then(result => console.log(result))
-// .catch(error => console.log(error))
-// src\\assets\\Pruebas\\prueba.md
-
+mdLinks('src\\assets\\Pruebas\\vacio.md', { valide: false })
+  .then(result => console.log(result))
+  .catch(error => console.log(error))
+  
 module.exports = {
   mdLinks
 };
