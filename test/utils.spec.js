@@ -8,6 +8,8 @@ const {
   transformPathRelativeInAbsolute,
 } = require('../src/utils.js');
 
+global.fetch = jest.fn();
+
 const pathIsExist = 'thumb.png'
 const pathIsRelativeExtMd = 'src\\assets\\Pruebas\\inicial.md'
 const pathIsAbsoluteExtMd = 'C:\\Users\\Laboratoria\\Isabel\\DEV003-md-links\\src\\assets\\Pruebas\\inicial.md'
@@ -101,8 +103,9 @@ describe('function returns information about HTTP request', () => {
     }
   ]
 
-  describe('function returns information about HTTP request', () => {
     it('fetchRequestStatus returns an array of objects with status and statusText properties', async () => {
+      fetch.mockImplementationOnce(() => Promise.resolve({status: 200, statusText: 'OK'}))
+      fetch.mockImplementationOnce(() => Promise.resolve({status: 404, statusText: 'FAIL'}))
       const result = await fetchRequestStatus(mockLinks);
       expect(Array.isArray(result)).toBe(true);
       expect(result.length).toBe(mockLinks.length);
@@ -113,6 +116,8 @@ describe('function returns information about HTTP request', () => {
     });
 
     it('fetchRequestStatus sets status to FAIL for links with status code 400 or higher', async () => {
+      fetch.mockImplementationOnce(() => Promise.resolve({status: 200, statusText: 'OK'}))
+      fetch.mockImplementationOnce(() => Promise.resolve({status: 404, statusText: 'FAIL'}))
       const result = await fetchRequestStatus(mockLinks);
       result.forEach((obj) => {
         if (obj.status >= 400) {
@@ -120,5 +125,4 @@ describe('function returns information about HTTP request', () => {
         }
       })
     })
-  })
-});
+  });
