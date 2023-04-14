@@ -31,7 +31,7 @@ const searchAndGetLinks = (route, data) => {
         const splitLink = link.split(']');
         return {
             href: splitLink[1].replace('(', '').replace(')', ''),
-            text: splitLink[0].replace('[', ''),
+            text: splitLink[0].replace('[', '').substring(0, 51),
             file: route,
         }
     })
@@ -39,26 +39,95 @@ const searchAndGetLinks = (route, data) => {
 }
 
 // -------- Consulta HTTP por medio de fetch --------
+// const fetchRequestStatus = matrixLinks => {
+//     const arrayPromises = matrixLinks.map(link => {
+//         /* para acceder y manipular partes del protocolo http, devuelve un Promise que resuelve al objeto response que es la respuesta a la solicitud realizada*/
+//         return fetch(link.href).then((response) => { // fetch retorna una promesa
+//             return {
+//                 ...link,
+//                 status: response.status,
+//                 statusText: response.status >= 400 ? 'FAIL' : response.statusText,
+//             }
+//         })
+//         .catch(error => {
+//             console.log(error)
+
+//         })
+//     })
+//     return Promise.all(arrayPromises)
+// }
+
 const fetchRequestStatus = matrixLinks => {
     const arrayPromises = matrixLinks.map(link => {
-        /* para acceder y manipular partes del protocolo http, devuelve un Promise que resuelve al objeto response que es la respuesta a la solicitud realizada*/
-        return fetch(link.href).then((response) => { // fetch retorna una promesa
-            return {
-                ...link,
-                status: response.status,
-                statusText: response.status >= 400 ? 'FAIL' : response.statusText,
-            }
-        })
+        return fetch(link.href)
+            .then((response) => {
+                return {
+                    ...link,
+                    status: response.status,
+                    statusText: response.status >= 400 ? 'FAIL' : response.statusText,
+                }
+            })
+            .catch(error => {
+                if (!error.response) {
+                    return {
+                        ...link,
+                        status: -1,
+                        statusText: 'FETCH FAILED'
+                    }
+                } else {
+                    return {
+                        ...link,
+                        status: error.response.status,
+                        statusText: error.response.statusText
+                    }
+                }
+            })
     })
     return Promise.all(arrayPromises)
 }
 
+
+// readFile('src\\assets\\Pruebas\\prueba.md').then((data) => {
+//     // src\\assets\\Pruebas\\url.md
+//     // 'src\\assets\\Pruebas\\inicial.md'
+//     fetchRequestStatus(searchAndGetLinks('src\\assets\\Pruebas\\prueba.md', data))
+//         .then(console.log)
+//         .catch(console.log)
+// })
+
+// -------- Total de links --------
+const links = [
+    { href: 'https://es.wikipedia.org/wiki/Markdown', status: 200, statusText: 'OK' },
+    { href: 'https://css-tricks.com/oohcrap', status: 404, statusText: 'FAIL' },
+    { href: 'https://es.wikipedia.org/wiki/Node.js', status: 200, statusText: 'OK' },
+    { href: 'https://example.com', status: 500, statusText: 'FAIL' },
+    { href: 'https://es.wikipedia.org/wiki/Markdown', status: 200, statusText: 'OK' }
+];
+const totalHref = array => `Total: ${array.length}`
+// console.log(totalHref(links))
+
+// -------- Total de links --------
+
+const uniqueHref = (array) => {
+    const unique = [...new Set(array.map((link) => link.href))];
+    return `Unique: ${unique.length}`;
+};
+
+// -------- Total de links --------
+const brokenHref = array => {
+    const broken = array.filter((link) => (link.status >= 400 || link.status === -1) && (link.statusText === 'FAIL' || link.statusText === 'FETCH FAILED'))
+    return `Broken: ${broken.length}`
+}
+
 module.exports = {
+    brokenHref,
     extnameFileisMd,
     pathExistsSync,
     readFile,
     searchAndGetLinks,
     fetchRequestStatus,
+    totalHref,
     transformPathRelativeInAbsolute,
+    uniqueHref
 };
 
