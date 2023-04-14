@@ -1,4 +1,3 @@
-// const { mdLinks } = require('../index.js');
 const {
   extnameFileisMd,
   fetchRequestStatus,
@@ -14,7 +13,7 @@ const pathIsExist = 'thumb.png'
 const pathIsRelativeExtMd = 'src\\assets\\Pruebas\\inicial.md'
 const pathIsAbsoluteExtMd = 'C:\\Users\\Laboratoria\\Isabel\\DEV003-md-links\\src\\assets\\Pruebas\\inicial.md'
 const fileEmpty = 'src\\assets\\Pruebas\\vacio.md'
-const fileAnyExt = 'src\\assets\\Pruebas\\Dir_vacio\\prueba.js'
+const fileAnyExt = 'src\\assets\\Pruebas\\lectura.js'
 const data = `
 Este es un texto con dos enlaces:
 [Markdown](https://es.wikipedia.org/wiki/Markdown)
@@ -84,45 +83,56 @@ describe('function returns an "array" of objects with information about the link
 // ---------- Consulta HTTP para validad estatus de links ----------
 // fn que devuelve una promesa que resuelve con una respuesta HTTP (así mockeamos a fetch)
 // se le pasó el código de status como argumento
+beforeEach(() => {
+  fetch.mockImplementationOnce(() => Promise.resolve({ status: 200, statusText: 'OK' }))
+  fetch.mockImplementationOnce(() => Promise.resolve({ status: 404, statusText: 'FAIL' }))
+});
+
+const matrixLinks = [
+  {
+    href: 'https://es.wikipedia.org/wiki/Markdown',
+    text: 'Markdown',
+    file: 'src\\assets\\Pruebas\\inicial.md',
+    status: 200,
+    statusText: 'OK'
+  },
+  {
+    href: 'https://css-tricks.com/oohcrap',
+    text: 'CSS-Tricks',
+    file: 'src\\assets\\Pruebas\\inicial.md',
+    status: 404,
+    statusText: 'FAIL'
+  },
+  {
+    href: 'http://community.laboratoria.la/t/modulos-librerias-paquetes-frameworks-cual-es-la-diferencia/175',
+    text: 'Módulos, librerías, paquetes, frameworks... ¿cuál e',
+    file: 'src\\assets\\Pruebas\\prueba.md',
+    status: -1,
+    statusText: 'FETCH FAILED'
+  },
+]
 
 describe('function returns information about HTTP request', () => {
-  const mockLinks = [
-    {
-      href: 'https://es.wikipedia.org/wiki/Markdown',
-      text: 'Markdown',
-      file: 'src\\assets\\Pruebas\\inicial.md',
-      status: 200,
-      statusText: 'OK'
-    },
-    {
-      href: 'https://css-tricks.com/oohcrap',
-      text: 'CSS-Tricks',
-      file: 'src\\assets\\Pruebas\\inicial.md',
-      status: 404,
-      statusText: 'FAIL'
-    }
-  ]
-
-    it('fetchRequestStatus returns an array of objects with status and statusText properties', async () => {
-      fetch.mockImplementationOnce(() => Promise.resolve({status: 200, statusText: 'OK'}))
-      fetch.mockImplementationOnce(() => Promise.resolve({status: 404, statusText: 'FAIL'}))
-      const result = await fetchRequestStatus(mockLinks);
-      expect(Array.isArray(result)).toBe(true);
-      expect(result.length).toBe(mockLinks.length);
-      result.forEach((obj) => {
-        expect(obj.hasOwnProperty('status')).toBe(true);
-        expect(obj.hasOwnProperty('statusText')).toBe(true);
-      });
-    });
-
-    it('fetchRequestStatus sets status to FAIL for links with status code 400 or higher', async () => {
-      fetch.mockImplementationOnce(() => Promise.resolve({status: 200, statusText: 'OK'}))
-      fetch.mockImplementationOnce(() => Promise.resolve({status: 404, statusText: 'FAIL'}))
-      const result = await fetchRequestStatus(mockLinks);
-      result.forEach((obj) => {
-        if (obj.status >= 400) {
-          expect(obj.statusText).toBe('FAIL');
-        }
+  it('fetchRequestStatus returns an array of objects with status and statusText properties', () => {
+    return fetchRequestStatus(matrixLinks)
+      .then(result => {
+        expect(Array.isArray(result)).toBe(true);
+        expect(result.length).toBe(matrixLinks.length);
+        result.forEach((obj) => {
+          expect(obj.hasOwnProperty('status')).toBe(true);
+          expect(obj.hasOwnProperty('statusText')).toBe(true);
+        })
       })
-    })
   });
+
+  it('fetchRequestStatus sets status to FAIL for links with status code 400 or higher', () => {
+    return fetchRequestStatus(matrixLinks)
+      .then(result => {
+        result.forEach((obj) => {
+          if (obj.status >= 400) {
+            expect(obj.statusText).toBe('FAIL');
+          }
+        })
+      })
+  })
+});
