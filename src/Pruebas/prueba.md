@@ -4,7 +4,6 @@
 ligero muy popular entre developers. Es usado en muchísimas plataformas que
 manejan texto plano (GitHub, foros, blogs, ...) y es muy común
 encontrar varios archivos [CSS-Tricks](https://css-tricks.com/oohcrap) en ese formato en cualquier tipo de repositorio (empezando por el tradicional `README.md`). 
-[Módulos, librerías, paquetes, frameworks... ¿cuál es la diferencia?](http://community.laboratoria.la/t/modulos-librerias-paquetes-frameworks-cual-es-la-diferencia/175)
 
 Estos archivos `Markdown` normalmente contienen _links_ (vínculos/ligas) que
 muchas veces están rotos o ya no son válidos y eso perjudica mucho el valor de

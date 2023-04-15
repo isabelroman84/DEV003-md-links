@@ -1,10 +1,11 @@
+/* eslint-disable prefer-promise-reject-errors */
 const {
   extnameFileisMd,
   pathExistsSync,
   readFile,
   searchAndGetLinks,
   transformPathRelativeInAbsolute,
-  fetchRequestStatus,
+  fetchRequestStatus
 } = require('./utils.js')
 
 const mdLinks = (path, options) => {
@@ -14,7 +15,7 @@ const mdLinks = (path, options) => {
     } else {
       const absolutePath = transformPathRelativeInAbsolute(path)
       readFile(absolutePath).then(data => {
-        const arrayLinks = searchAndGetLinks(absolutePath, data);
+        const arrayLinks = searchAndGetLinks(absolutePath, data)
         if (arrayLinks.length === 0) {
           reject(`The ${path} doesn´t have links`)
         } else {
@@ -30,14 +31,14 @@ const mdLinks = (path, options) => {
   })
 }
 
-mdLinks('src\\assets\\Pruebas\\url.md', { valide: true })
-  .then(result => console.log(result))
-  .catch(error => console.log(error))
+// mdLinks('src\\assets\\Pruebas\\url.md', { valide: true })
+//   .then(result => console.log(result))
+//   .catch(error => console.log(error))
 
-mdLinks('src\\assets\\Pruebas\\vacio.md', { valide: false })
-  .then(result => console.log(result))
-  .catch(error => console.log(error))
+// mdLinks('src\\assets\\Pruebas\\vacio.md', { valide: false })
+//   .then(result => console.log(result))
+//   .catch(error => console.log(error))
 
 module.exports = {
   mdLinks
-};
+}
