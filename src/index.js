@@ -31,14 +31,6 @@ const mdLinks = (path, options) => {
   })
 }
 
-// mdLinks('src\\assets\\Pruebas\\url.md', { valide: true })
-//   .then(result => console.log(result))
-//   .catch(error => console.log(error))
-
-// mdLinks('src\\assets\\Pruebas\\vacio.md', { valide: false })
-//   .then(result => console.log(result))
-//   .catch(error => console.log(error))
-
 module.exports = {
   mdLinks
 }
