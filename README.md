@@ -35,6 +35,8 @@ Puedes instalar la librería a través de npm:
 
 ` npm i isabelroman-mdlinks `
 
+Para acceder se debe importar con require('isabelroman-mdlinks')
+
 ## 4. Instrucciones de Uso
 
 Para comenzar con la ejecución del programa: 
