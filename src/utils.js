@@ -55,6 +55,12 @@ const fetchRequestStatus = matrixLinks => {
             status: -1,
             statusText: 'FETCH FAILED'
           }
+        } else {
+          return {
+            ...link,
+            status: error.response.status,
+            statusText: error.response.statusText
+          }
         }
       })
   })

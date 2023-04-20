@@ -1,11 +1,11 @@
 #!/usr/bin/env node
-const { mdLinks } = require('../src/index.js')
+const { mdLinks } = require('./index.js')
 const {
   brokenHref,
   fetchRequestStatus,
   totalHref,
   uniqueHref
-} = require('../src/utils.js')
+} = require('./utils.js')
 const colors = require('colors')
 
 const path = process.argv[2]
@@ -27,8 +27,8 @@ const urlStyle = array => {
   const style = array.map(
     link => ` \n 
    ${'href:'.yellow} ${link.href.cyan} 
-   ${'href:'.yellow} ${link.text.cyan}
-   ${'href:'.yellow} ${link.file.cyan}
+   ${'text:'.yellow} ${link.text.cyan}
+   ${'file:'.yellow} ${link.file.cyan}
    `
   )
   return style
@@ -50,7 +50,7 @@ const urlStyleHttp = array => {
 const cli = () => {
   if (path === undefined) {
     textHelp()
-  } else if (path) {
+  } else if (path && !validate && !stats) {
     mdLinks(path, { validate: false }).then(resp => {
       console.log(`${urlStyle(resp)}`)
     })
