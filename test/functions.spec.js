@@ -14,7 +14,7 @@ const { mdLinks } = require('../src/index.js')
 
 global.fetch = jest.fn()
 
-const pathIsExist = 'thumb.png'
+const pathIsExist = 'package.json'
 const pathIsRelativeExtMd = 'src\\Pruebas\\test-file.md'
 const pathIsAbsoluteExtMd = 'C:\\Users\\Laboratoria\\Isabel\\DEV003-md-links\\src\\Pruebas\\test-file.md'
 const fileEmpty = 'src\\Pruebas\\vacio.md'
